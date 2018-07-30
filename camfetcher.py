@@ -87,21 +87,18 @@ def process_email(msg):
 
 def process_mailbox(M):
     rv, msgs = M.search(None, "UNSEEN")
-    msg_nums = msgs[0].split()
-
     if rv != 'OK':
         logger.debug("No messages found!")
         return
 
-    for num in msg_nums:
+    for num in msgs[0].split():
         rv, data = M.fetch(num, '(RFC822)')
 
         if rv != 'OK':
             logger.error("Cannot retrieve message %s", num)
             return
 
-        email_body = data[0][1]
-        msg = email.message_from_string(email_body)
+        msg = email.message_from_bytes(data[0][1])
         process_email(msg)
 
 
