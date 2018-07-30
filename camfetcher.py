@@ -80,7 +80,7 @@ def get_out_dir(cam, image_time):
     out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
 
     if not os.path.exists(out_dir):
-        lodder.info("Creating directory: %s", out_dir)
+        logger.info("Creating directory: %s", out_dir)
         os.makedirs(out_dir)
 
     return out_dir
