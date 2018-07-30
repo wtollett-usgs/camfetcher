@@ -25,6 +25,9 @@ from imaplib import IMAP4, IMAP4_SSL
 import getpass
 import email
 import datetime
+import sys
+
+req_version = (3, 5)
 
 env = None
 
@@ -102,9 +105,16 @@ def process_mailbox(M):
         process_email(msg)
 
 
+def check_version():
+    if sys.version_info < req_version:
+        msg = "Python interpreter is too old. I need at least %s"
+        exit_with_error(msg.format(req_version))
+
+
 def main():
     """Where it all begins."""
 
+    check_version()
     setup_logging()
 
     with  IMAP4_SSL(get_env_var('IMAPSERVER', required=True)) as M:
