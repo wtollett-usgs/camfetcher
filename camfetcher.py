@@ -29,9 +29,10 @@ import email.policy
 import datetime
 import sys
 import shutil
+import time
+
 
 req_version = (3, 5)
-
 env = None
 
 
@@ -74,9 +75,9 @@ def setup_logging():
         logger.info("SMTP logging not configured.")
 
 
-def get_out_dir(cam, time):
-    out_dir = pathlib.Path(get_env_var('OUT_DIR', required=True))
-    out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H")
+def get_out_dir(cam, image_time):
+    out_dir = pathlib.Path(get_env_var('CF_OUT_DIR', required=True))
+    out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
 
     if not os.path.exists(out_dir):
         lodder.info("Creating directory: %s", out_dir)
@@ -99,8 +100,8 @@ def process_email(msg, cam):
             fp.close()
 
         file_time_str = filename[9:23]
-        time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
-        out_dir = get_out_dir(cam, time)
+        image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
+        out_dir = get_out_dir(cam, image_time)
         out_file = out_dir / (file_time_str + "M.jpg")
 
         shutil.move(sv_path, out_file)
