@@ -24,6 +24,8 @@ import sys
 from imaplib import IMAP4, IMAP4_SSL
 import getpass
 import email
+import email.message
+import email.policy
 import datetime
 import sys
 
@@ -98,7 +100,7 @@ def process_mailbox(M):
             logger.error("Cannot retrieve message %s", num)
             return
 
-        msg = email.message_from_bytes(data[0][1])
+        msg = email.message_from_bytes(data[0][1], policy=email.policy.default)
         process_email(msg)
 
 
