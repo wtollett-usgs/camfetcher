@@ -28,6 +28,7 @@ import email.message
 import email.policy
 import datetime
 import sys
+import shutil
 
 req_version = (3, 5)
 
@@ -73,21 +74,39 @@ def setup_logging():
         logger.info("SMTP logging not configured.")
 
 
-def process_email(msg):
+def get_out_dir(cam, time):
+    out_dir = pathlib.Path(get_env_var('OUT_DIR', required=True))
+    out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H")
+
+    if not os.path.exists(out_dir):
+        lodder.info("Creating directory: %s", out_dir)
+        os.makedirs(out_dir)
+
+    return out_dir
+
+
+def process_email(msg, cam):
     for attchment in msg.iter_attachments():
         filename=attchment.get_filename()
         if filename is None:
             continue
 
-        sv_path = os.path.join("/tmp/cam", filename)
+        sv_path = os.path.join("/tmp", filename)
         if not os.path.isfile(sv_path):
             logger.debug("creating %s", sv_path)
             fp = open(sv_path, 'wb')
             fp.write(attchment.get_payload(decode=True))
             fp.close()
 
+        file_time_str = filename[9:23]
+        time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
+        out_dir = get_out_dir(cam, time)
+        out_file = out_dir / (file_time_str + "M.jpg")
 
-def process_mailbox(M):
+        shutil.move(sv_path, out_file)
+
+
+def process_mailbox(M, cam):
     rv, msgs = M.search(None, "UNSEEN")
     if rv != 'OK':
         logger.debug("No messages found!")
@@ -101,7 +120,7 @@ def process_mailbox(M):
             return
 
         msg = email.message_from_bytes(data[0][1], policy=email.policy.default)
-        process_email(msg)
+        process_email(msg, cam)
 
 
 def check_version():
@@ -127,7 +146,7 @@ def main():
             rv, data = M.select(cam)
             if rv == 'OK':
                 logger.debug("Processing mailbox %s", cam)
-                process_mailbox(M)
+                process_mailbox(M, cam)
                 M.close()
 
     logger.debug("That's all for now, bye.")
