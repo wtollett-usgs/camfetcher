@@ -7,7 +7,7 @@ if [ $? == 0 ]; then
     docker run \
         --restart=always \
         --detach=true \
-        --mount type=bind,src=$HOME/camfetcher,dst=/data \
+        --mount type=bind,src=$HOME/hvocam,dst=/data \
         --env-file=$HOME/private/camfetcher.env \
         --name camfetcher \
         camfetcher
