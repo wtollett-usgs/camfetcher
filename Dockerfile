@@ -26,6 +26,8 @@ RUN pip install --no-cache-dir -r requirements.txt # 1
 ADD VERSION .
 ADD camfetcher.py .
 RUN chmod 755 camfetcher.py
+ADD update_current_image.py .
+RUN chmod 755 update_current_image.py
 ADD support/cron-camfetcher .
 ADD support/run_crond.sh  .
 RUN chmod 755 run_crond.sh
