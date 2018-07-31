@@ -36,6 +36,8 @@ import pytz
 
 DIR_SUFFIX_FMT = "archive/%Y/%m/%d/%H"
 FILENAME_FMT = "%Y%m%d%H%M%SM.jpg"
+HST = pytz.timezone('US/Hawaii')
+
 
 def exit_with_error(error):
     logger.error(error)
@@ -105,13 +107,12 @@ def get_image_time(js_file):
 def find_most_recent_image(image_dir):
     most_recent = None
     try:
-        suffix = time.strftime(DIR_SUFFIX_FMT, time.localtime())
+        suffix = datetime.now(tz=HST).strftime(DIR_SUFFIX_FMT)
         current_dir = image_dir / suffix
         most_recent_file = os.listdir(current_dir)[-1]
         logger.debug("Most recent file: %s", most_recent_file)
         most_recent = datetime.strptime(most_recent_file, FILENAME_FMT)
-        hst = pytz.timezone('US/Hawaii')
-        most_recent = hst.localize(most_recent)
+        most_recent = HST.localize(most_recent)
 
         logger.debug("Most recent time: %s", most_recent)
     except FileNotFoundError:
