@@ -96,7 +96,7 @@ def get_image_time(js_file):
                 image_time = dateutil.parser.parse(time_str, fuzzy=True,
                                                    tzinfos={"HST": -36000})
     except FileNotFoundError:
-        logger.info("js file not found in %s.", image_dir)
+        logger.info("js file not found in %s.", js_file)
 
     logger.debug("Current image is %s", image_time)
     return image_time
