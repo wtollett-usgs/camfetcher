@@ -24,6 +24,8 @@ ADD requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt # 1
 
 ADD VERSION .
+ADD support/single.py .
+RUN chmod 755 single.py
 ADD camfetcher.py .
 RUN chmod 755 camfetcher.py
 ADD update_current_image.py .
