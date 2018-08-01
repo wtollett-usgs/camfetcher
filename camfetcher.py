@@ -9,30 +9,20 @@
 
 """ Retrieve camera images from email attachments."""
 
-from datetime import timedelta, datetime
 import logging
 import os
-import sys
-import socket
-import struct
 import pathlib
-from urllib.parse import urlparse
-import errno
-from multiprocessing import Process
 from buffering_smtp_handler import BufferingSMTPHandler
-import sys
 from imaplib import IMAP4, IMAP4_SSL
-import getpass
 import email
 import email.message
 import email.policy
-import datetime
 import sys
 import shutil
 import time
 
 
-req_version = (3, 5)
+REQ_VERSION = (3, 5)
 env = None
 
 
@@ -42,16 +32,17 @@ def exit_with_error(error):
     sys.exit(1)
 
 
-def get_env_var(var, required=False, default=None):
+def get_env_var(var, default=None):
     if var in os.environ:
         logger.debug("%s: %s", var, os.environ[var])
         return os.environ[var]
 
     else:
-        if required:
+        if default is None:
             msg = "Envionment variable {} not set, exiting.".format(var)
             exit_with_error(EnvironmentError(msg))
         else:
+            logger.debug("%s: %s (default)", var, default)
             return default
 
 
@@ -76,7 +67,7 @@ def setup_logging():
 
 
 def get_out_dir(cam, image_time):
-    out_dir = pathlib.Path(get_env_var('CF_OUT_DIR', required=True))
+    out_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
     out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
 
     if not os.path.exists(out_dir):
@@ -125,25 +116,25 @@ def process_mailbox(M, cam):
 
 
 def check_version():
-    if sys.version_info < req_version:
+    if sys.version_info < REQ_VERSION:
         msg = "Python interpreter is too old. I need at least %s"
-        exit_with_error(msg.format(req_version))
+        exit_with_error(msg.format(REQ_VERSION))
 
 
 def main():
     """Where it all begins."""
 
-    check_version()
     setup_logging()
+    check_version()
 
-    with  IMAP4_SSL(get_env_var('IMAPSERVER', required=True)) as M:
+    with  IMAP4_SSL(get_env_var('IMAPSERVER')) as M:
         try:
-            M.login(get_env_var('CF_USER', required=True),
-                    get_env_var('CF_PASSWD', required=True))
+            M.login(get_env_var('CF_USER'),
+                    get_env_var('CF_PASSWD'))
         except IMAP4.error:
             exit_with_error("Login failed.")
 
-        for cam in get_env_var('CF_CAMS', required=True).split(':'):
+        for cam in get_env_var('CF_CAMS').split(':'):
             rv, data = M.select(cam)
             if rv == 'OK':
                 logger.debug("Processing mailbox %s", cam)
