@@ -1,3 +1,4 @@
-buffering-smtp-handler==0.2.1
-python-dateutil==2.7.3
+buffering-smtp-handler>=0.2.1
+python-dateutil>=2.7.3
 pytz>=2018.4
+Pillow>=5.1.0
