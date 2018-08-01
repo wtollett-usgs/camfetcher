@@ -96,7 +96,7 @@ def find_most_recent_image(image_dir):
     try:
         suffix = datetime.now(tz=HST).strftime(DIR_SUFFIX_FMT)
         current_dir = image_dir / suffix
-        most_recent_file = os.listdir(current_dir)[-1]
+        most_recent_file = os.listdir(current_dir).sort()[-1]
         logger.debug("Most recent file: %s", most_recent_file)
         most_recent = datetime.strptime(most_recent_file, FILENAME_FMT)
         most_recent = HST.localize(most_recent)
