@@ -101,14 +101,14 @@ def process_email(msg, cam):
 def process_mailbox(M, cam):
     rv, msgs = M.search(None, "UNSEEN")
     if rv != 'OK':
-        logger.debug("No messages found!")
+        logger.debug("No new messages found for cam %s.", cam)
         return
 
-    for num in msgs[0].split():
-        rv, data = M.fetch(num, '(RFC822)')
+    for msgNum in msgs[0].split():
+        rv, data = M.fetch(msgNum, '(RFC822)')
 
         if rv != 'OK':
-            logger.error("Cannot retrieve message %s", num)
+            logger.error("Cannot retrieve message %s for cam %s", msgNum, cam)
             return
 
         msg = email.message_from_bytes(data[0][1], policy=email.policy.default)
