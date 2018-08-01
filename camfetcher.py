@@ -69,14 +69,14 @@ def setup_logging():
 
 
 def get_archive_dir(cam, image_time):
-    out_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
-    out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
+    archive_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
+    archive_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
 
-    if not os.path.exists(out_dir):
-        logger.info("Creating directory: %s", out_dir)
-        os.makedirs(out_dir)
+    if not os.path.exists(archive_dir):
+        logger.info("Creating directory: %s", archive_dir)
+        os.makedirs(archive_dir)
 
-    return out_dir
+    return archive_dir
 
 
 def process_email(msg, cam):
