@@ -140,7 +140,10 @@ def main():
             if rv == 'OK':
                 logger.debug("Processing mailbox %s", cam)
                 process_mailbox(M, cam)
-                M.close()
+            else:
+                msg = "Received non-OK response opening mailbox %s, " \
+                      + "lets skip this one. (%s)"
+                logger.error(msg.format(cam, rv))
 
     logger.debug("That's all for now, bye.")
     logging.shutdown()
