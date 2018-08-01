@@ -18,7 +18,7 @@ import shutil
 import dateutil.parser
 from datetime import datetime
 import pytz
-import Image
+from PIL import Image
 
 DIR_SUFFIX_FMT = "archive/%Y/%m/%d/%H"
 FILENAME_FMT = "%Y%m%d%H%M%SM.jpg"
