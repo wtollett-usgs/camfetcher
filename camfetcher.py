@@ -117,8 +117,9 @@ def process_mailbox(M, cam):
 
 def check_version():
     if sys.version_info < REQ_VERSION:
-        msg = "Python interpreter is too old. I need at least %s"
-        exit_with_error(msg.format(REQ_VERSION))
+        msg = "Python interpreter is too old. I need at least 3.5 " \
+              + "for EmailMessage.iter_attachments() support."
+        exit_with_error(msg)
 
 
 def main():
