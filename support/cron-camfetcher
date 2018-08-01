@@ -1,4 +1,4 @@
 PATH=/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/app/camfetcher
 
-10 * * * * root single.py -c camfetcher.py > dev/null 2>&1
-15 * * * * root single.py -c update_current_image.py > dev/null 2>&1
+*/1 * * * * root single.py -c camfetcher.py > dev/null 2>&1
+*/1 * * * * root single.py -c update_current_image.py > dev/null 2>&1
