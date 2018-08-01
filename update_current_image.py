@@ -123,7 +123,7 @@ def create_current_image(image_dir, last_image):
     shutil.copyfile(last_file, current_file)
 
     try:
-        im = Image.open(last_image)
+        im = Image.open(last_file)
         im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
         thumbnail = image_dir / "M.thumb.jpg"
         im.save(thumbnail, "JPEG")
