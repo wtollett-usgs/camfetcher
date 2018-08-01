@@ -9,34 +9,21 @@
 
 """ Retrieve camera images from email attachments."""
 
-from datetime import timedelta, datetime
 import logging
 import os
-import sys
-import socket
-import struct
 import pathlib
-from urllib.parse import urlparse
-import errno
-from multiprocessing import Process
 from buffering_smtp_handler import BufferingSMTPHandler
 import sys
-from imaplib import IMAP4, IMAP4_SSL
-import getpass
-import email
-import email.message
-import email.policy
-import datetime
-import sys
 import shutil
-import time
 import dateutil.parser
 from datetime import datetime
 import pytz
+import Image
 
 DIR_SUFFIX_FMT = "archive/%Y/%m/%d/%H"
 FILENAME_FMT = "%Y%m%d%H%M%SM.jpg"
 HST = pytz.timezone('US/Hawaii')
+THUMBNAIL_SIZE = {384, 288}
 
 
 def exit_with_error(error):
@@ -97,7 +84,7 @@ def get_image_time(js_file):
                 time_str = line.split('"')[1]
                 image_time = dateutil.parser.parse(time_str, fuzzy=True,
                                                    tzinfos={"HST": -36000})
-    except FileNotFoundError:
+    except OSError:
         logger.info("js file not found in %s.", js_file)
 
     logger.debug("Current image is %s", image_time)
@@ -113,9 +100,8 @@ def find_most_recent_image(image_dir):
         logger.debug("Most recent file: %s", most_recent_file)
         most_recent = datetime.strptime(most_recent_file, FILENAME_FMT)
         most_recent = HST.localize(most_recent)
-
         logger.debug("Most recent time: %s", most_recent)
-    except FileNotFoundError:
+    except OSError:
         logger.info("Hour dir not found. (%s)", current_dir)
 
     return most_recent
@@ -136,22 +122,29 @@ def create_current_image(image_dir, last_image):
     current_file = image_dir / "M.jpg"
     shutil.copyfile(last_file, current_file)
 
+    try:
+        im = Image.open(last_image)
+        im.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
+        thumbnail = image_dir / "M.thumb.jpg"
+        im.save(thumbnail, "JPEG")
+    except IOError:
+        logger.error("cannot create thumbnail for '%s'", last_image)
+
 
 def update_cam(cam):
-    logger.debug("Updating %s", cam)
+    logger.debug("Updating cam %s", cam)
     image_dir = get_image_dir(cam)
     js_file = image_dir / "js.js"
     image_time = get_image_time(js_file)
-    logger.debug("Old image time: %s", image_time)
-    most_recent = None
-    last_image = find_most_recent_image(image_dir)
-    if last_image is None:
+    logger.debug("Current image time: %s", image_time)
+    most_recent_image = find_most_recent_image(image_dir)
+    if most_recent_image is None:
         logger.info("No recent image, nothing to do")
         return
 
-    if image_time is None or last_image > image_time:
-        write_js(js_file, last_image)
-        create_current_image(image_dir, last_image)
+    if image_time is None or most_recent_image > image_time:
+        write_js(js_file, most_recent_image)
+        create_current_image(image_dir, most_recent_image)
         logger.info("new image")
 
 
