@@ -23,6 +23,8 @@ import time
 
 
 REQ_VERSION = (3, 5)
+TMP_DIR = "/tmp"
+
 env = None
 
 
@@ -66,7 +68,7 @@ def setup_logging():
         logger.info("SMTP logging not configured.")
 
 
-def get_out_dir(cam, image_time):
+def get_archive_dir(cam, image_time):
     out_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
     out_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
 
@@ -83,19 +85,18 @@ def process_email(msg, cam):
         if filename is None:
             continue
 
-        sv_path = os.path.join("/tmp", filename)
-        if not os.path.isfile(sv_path):
-            logger.debug("creating %s", sv_path)
-            fp = open(sv_path, 'wb')
-            fp.write(attchment.get_payload(decode=True))
-            fp.close()
+        tmp_file = os.path.join(TMP_DIR, filename)
+        logger.debug("creating %s", tmp_file)
+        fp = open(tmp_file, 'wb')
+        fp.write(attchment.get_payload(decode=True))
+        fp.close()
 
         file_time_str = filename[9:23]
         image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
-        out_dir = get_out_dir(cam, image_time)
-        out_file = out_dir / (file_time_str + "M.jpg")
+        archive_dir = get_archive_dir(cam, image_time)
+        archive_file = archive_dir / (file_time_str + "M.jpg")
 
-        shutil.move(sv_path, out_file)
+        shutil.move(tmp_file, archive_file)
 
 
 def process_mailbox(M, cam):
