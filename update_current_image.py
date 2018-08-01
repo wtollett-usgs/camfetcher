@@ -23,7 +23,7 @@ from PIL import Image
 DIR_SUFFIX_FMT = "archive/%Y/%m/%d/%H"
 FILENAME_FMT = "%Y%m%d%H%M%SM.jpg"
 HST = pytz.timezone('US/Hawaii')
-THUMBNAIL_SIZE = {384, 288}
+THUMBNAIL_SIZE = (384, 288)
 
 
 def exit_with_error(error):
