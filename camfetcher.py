@@ -70,7 +70,8 @@ def setup_logging():
 
 def get_archive_dir(cam, image_time):
     archive_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
-    archive_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H", image_time)
+    archive_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H",
+                                 image_time)
 
     if not os.path.exists(archive_dir):
         logger.info("Creating directory: %s", archive_dir)
@@ -81,7 +82,7 @@ def get_archive_dir(cam, image_time):
 
 def process_email(msg, cam):
     for attchment in msg.iter_attachments():
-        filename=attchment.get_filename()
+        filename = attchment.get_filename()
         if filename is None:
             continue
 
@@ -129,7 +130,7 @@ def main():
     setup_logging()
     check_version()
 
-    with  IMAP4_SSL(get_env_var('IMAPSERVER')) as M:
+    with IMAP4_SSL(get_env_var('IMAPSERVER')) as M:
         try:
             M.login(get_env_var('CF_USER'),
                     get_env_var('CF_PASSWD'))
