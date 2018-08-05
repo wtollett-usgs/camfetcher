@@ -19,7 +19,7 @@ import email.policy
 import sys
 import shutil
 import time
-from camutil import *
+from tomputils.util import *
 
 REQ_VERSION = (3, 5)
 TMP_DIR = "/tmp"
@@ -86,7 +86,8 @@ def check_version():
 def main():
     """Where it all begins."""
 
-    setup_logging()
+    global logger
+    logger = setup_logging("camfetchers errors")
     check_version()
 
     with IMAP4_SSL(get_env_var('IMAPSERVER')) as M:
