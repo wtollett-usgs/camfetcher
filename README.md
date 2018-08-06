@@ -13,7 +13,7 @@ camfetcher looks to its environment for configuration. It requires the following
   * **CF_CAMS** A colon-seperated list of mailboxes to poll for images
   * **CF_OUT_DIR** Base directory. Images will be placed here.
 
-## Instalation
+## Installation
 camfetcher can be installed directly or run in a Docker container. 
 
 To install directly, place the two .py files somethere convienent and install the required Python libs with something like `pip install -r requirements.txt`.
