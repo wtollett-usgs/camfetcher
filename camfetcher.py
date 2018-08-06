@@ -19,7 +19,7 @@ import email.policy
 import sys
 import shutil
 import time
-from tomputils.util import *
+import tomputils.util as tutil
 
 REQ_VERSION = (3, 5)
 TMP_DIR = "/tmp"
@@ -28,7 +28,7 @@ env = None
 
 
 def get_archive_dir(cam, image_time):
-    archive_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
+    archive_dir = pathlib.Path(tutil.get_env_var('CF_OUT_DIR'))
     archive_dir /= time.strftime(cam + "/images/archive/%Y/%m/%d/%H",
                                  image_time)
 
@@ -80,24 +80,24 @@ def check_version():
     if sys.version_info < REQ_VERSION:
         msg = "Python interpreter is too old. I need at least 3.5 " \
               + "for EmailMessage.iter_attachments() support."
-        exit_with_error(msg)
+        tutil.exit_with_error(msg)
 
 
 def main():
     """Where it all begins."""
 
     global logger
-    logger = setup_logging("camfetchers errors")
+    logger = tutil.setup_logging("camfetchers errors")
     check_version()
 
-    with IMAP4_SSL(get_env_var('IMAPSERVER')) as M:
+    with IMAP4_SSL(tutil.get_env_var('IMAPSERVER')) as M:
         try:
-            M.login(get_env_var('CF_USER'),
-                    get_env_var('CF_PASSWD'))
+            M.login(tutil.get_env_var('CF_USER'),
+                    tutil.get_env_var('CF_PASSWD'))
         except IMAP4.error:
-            exit_with_error("Login failed.")
+            tutil.exit_with_error("Login failed.")
 
-        for cam in get_env_var('CF_CAMS').split(':'):
+        for cam in tutil.get_env_var('CF_CAMS').split(':'):
             rv, data = M.select(cam)
             if rv == 'OK':
                 logger.debug("Processing mailbox %s", cam)

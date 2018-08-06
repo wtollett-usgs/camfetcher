@@ -17,6 +17,7 @@ import dateutil.parser
 from datetime import datetime
 import pytz
 from PIL import Image
+import tomputils.util as tutil
 
 DIR_SUFFIX_FMT = "archive/%Y/%m/%d/%H"
 FILENAME_FMT = "%Y%m%d%H%M%SM.jpg"
@@ -25,7 +26,7 @@ THUMBNAIL_SIZE = (384, 288)
 
 
 def get_image_dir(cam):
-    base_dir = pathlib.Path(get_env_var('CF_OUT_DIR'))
+    base_dir = pathlib.Path(tutil.get_env_var('CF_OUT_DIR'))
     image_dir = base_dir / cam / "images"
     logger.debug("image_dir: %s", image_dir)
 
@@ -110,9 +111,10 @@ def update_cam(cam):
 def main():
     """Where it all begins."""
 
-    setup_logging()
+    global logger
+    logger = tutil.setup_logging()
 
-    for cam in get_env_var('CF_CAMS').split(":"):
+    for cam in tutil.get_env_var('CF_CAMS').split(":"):
         update_cam(cam)
 
     logger.debug("That's all for now, bye.")
