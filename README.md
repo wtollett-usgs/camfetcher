@@ -1,6 +1,6 @@
 # camfetcher
 
-
+[![Build Status](https://travis-ci.org/tparker-usgs/camfetcher.svg?branch=master)](https://travis-ci.org/tparker-usgs/camfetcher)
 [![Code Climate](https://codeclimate.com/github/tparker-usgs/camfetcher/badges/gpa.svg)](https://codeclimate.com/github/tparker-usgs/camfetcher)
 
 ## Configuration
