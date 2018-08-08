@@ -13,6 +13,11 @@ camfetcher looks to its environment for configuration. It requires the following
   * **CF_CAMS** A colon-seperated list of mailboxes to poll for images
   * **CF_OUT_DIR** Base directory. Images will be placed here.
 
+Optionally, camfetcher will email messages logged at level error or greater. To enable this, set the following environment variables:
+  * **MAILHOST** SMTP server
+  * **LOG_SENDER** Address used for From:
+  * **LOG_RECIPIENT** Address used for To:
+  
 ## Installation
 camfetcher can be installed directly or run in a Docker container. 
 
