@@ -7,6 +7,8 @@ if [ $? == 0 ]; then
         --detach=true \
         --volume /lamp/cams:/cams \
         --env-file=/home/tparker/private/camfetcher.env \
+        --log-driver json-file \
+        --log-opt max-size=10m \
         --name camfetcher \
         camfetcher
 else

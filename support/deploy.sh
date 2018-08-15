@@ -9,6 +9,8 @@ if [ $? == 0 ]; then
         --detach=true \
         --mount type=bind,src=$HOME/hvocam,dst=/data \
         --env-file=$HOME/private/camfetcher.env \
+        --log-driver json-file \
+        --log-opt max-size=10m \
         --name camfetcher \
         camfetcher
 else
