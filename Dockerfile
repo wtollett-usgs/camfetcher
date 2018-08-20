@@ -9,8 +9,10 @@ FROM python:3.7
 
 RUN apt-get update
 
-WORKDIR /root/.pip
-ADD support/pip.conf .
+# HVO SSL trafic to pypi doesn't go through the SSL inspection devices
+# -- tjp 8/20/2018 
+#WORKDIR /root/.pip
+#ADD support/pip.conf .
 
 WORKDIR /root/certs
 add support/DOIRootCA2.cer .
@@ -19,7 +21,8 @@ WORKDIR /usr/share/ca-certificates/extra
 ADD support/DOIRootCA2.cer DOIRootCA2.crt
 RUN echo "extra/DOIRootCA2.crt" >> /etc/ca-certificates.conf && update-ca-certificates
 
-RUN useradd geod
+RUN groupadd geology 
+  && useradd -g geology geod
 
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.6/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
