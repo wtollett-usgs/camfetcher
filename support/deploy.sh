@@ -11,6 +11,7 @@ if [ $? == 0 ]; then
         --env-file=$HOME/private/camfetcher.env \
         --log-driver json-file \
         --log-opt max-size=10m \
+        --user geod \
         --name camfetcher \
         camfetcher
 else
