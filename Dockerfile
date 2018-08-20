@@ -21,8 +21,8 @@ WORKDIR /usr/share/ca-certificates/extra
 ADD support/DOIRootCA2.cer DOIRootCA2.crt
 RUN echo "extra/DOIRootCA2.crt" >> /etc/ca-certificates.conf && update-ca-certificates
 
-RUN groupadd geology \
-  && useradd -g geology geod
+RUN groupadd -g 1500 geology \
+  && useradd -u 1500 -g geology geod
 
 ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.1.6/supercronic-linux-amd64 \
     SUPERCRONIC=supercronic-linux-amd64 \
