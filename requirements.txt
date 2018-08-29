@@ -2,3 +2,5 @@ python-dateutil>=2.7.3
 pytz>=2018.4
 Pillow>=5.1.0
 tomputils>=1.3.7
+humanize
+single

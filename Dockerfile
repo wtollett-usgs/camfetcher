@@ -9,8 +9,6 @@ FROM python:3.7
 
 RUN apt-get update
 
-# HVO SSL trafic to pypi doesn't go through the SSL inspection devices
-# -- tjp 8/20/2018 
 #WORKDIR /root/.pip
 #ADD support/pip.conf .
 
@@ -41,7 +39,6 @@ RUN pip install --no-cache-dir -r requirements.txt # 1
 ADD VERSION .
 ADD camfetcher.py .
 ADD update_current_image.py .
-ADD support/single.py .
 ADD support/cron-camfetcher .
 RUN chmod 755 *
 
