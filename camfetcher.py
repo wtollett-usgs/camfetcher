@@ -52,7 +52,11 @@ def process_email(msg, cam):
         fp.close()
 
         file_time_str = filename.split('_')[1]
-        image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
+        try:
+            image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
+        except ValueError:
+            logger.exception("Unable to parse filename.")
+
         archive_dir = get_archive_dir(cam, image_time)
         archive_file = archive_dir / (file_time_str + "M.jpg")
 
