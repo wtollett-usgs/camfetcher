@@ -51,7 +51,7 @@ def process_email(msg, cam):
         fp.write(attchment.get_payload(decode=True))
         fp.close()
 
-        file_time_str = filename[9:23]
+        file_time_str = filename.split('_')[1]
         image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
         archive_dir = get_archive_dir(cam, image_time)
         archive_file = archive_dir / (file_time_str + "M.jpg")
