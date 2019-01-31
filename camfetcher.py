@@ -16,6 +16,7 @@ from imaplib import IMAP4, IMAP4_SSL
 import email
 import email.message
 import email.policy
+import socket
 import sys
 import shutil
 import time
@@ -93,6 +94,11 @@ def main():
     global logger
     logger = tutil.setup_logging("camfetchers errors")
     check_version()
+
+    if 'CF_TIMEOUT' in os.environ:
+        timeout = float(os.environ['CF_TIMEOUT'])
+        logger.debug("Setting timeout to %.2f" % timeout)
+        socket.setdefaulttimeout(timeout)
 
     with IMAP4_SSL(tutil.get_env_var('IMAPSERVER')) as M:
         try:

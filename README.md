@@ -17,6 +17,9 @@ Optionally, camfetcher will email messages logged at level error or greater. To 
   * **MAILHOST** SMTP server
   * **LOG_SENDER** Address used for From:
   * **LOG_RECIPIENT** Address used for To:
+
+A timeout value for requests can also be optionally set using the following environment variable:
+  * **CF_TIMEOUT** The number of seconds before a request times out.
   
 ## Installation
 camfetcher can be installed directly or run in a Docker container. 
