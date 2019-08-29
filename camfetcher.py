@@ -52,11 +52,25 @@ def process_email(msg, cam):
         fp.write(attchment.get_payload(decode=True))
         fp.close()
 
-        file_time_str = filename.split('_')[1]
+        # First, try to grab the time from the filename (GameCam)
+        # If that fails, grab it from the msg text (BigfootCam)
         try:
-            image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
-        except ValueError:
-            logger.exception("Unable to parse filename.")
+            file_time_str = filename.split('_')[1]
+            try:
+                image_time = time.strptime(file_time_str, "%Y%m%d%H%M%S")
+            except ValueError:
+                logger.exception("Unable to parse filename.")
+        except IndexError:
+            body = msg.get_body(preferencelist=('plain',))
+            if body:
+                s = body.get_payload(decode=True).decode('utf-8')
+                file_time_str = s.split('Date & Time:')[1].strip()
+                try:
+                    image_time = time.strptime(file_time_str,
+                                               "%m/%d/%Y %H:%M:%S")
+                    file_time_str = time.strftime("%Y%m%d%H%M%S", image_time)
+                except ValueError:
+                    logger.exception("Unable to parse filename.")
 
         archive_dir = get_archive_dir(cam, image_time)
         archive_file = archive_dir / (file_time_str + "M.jpg")
